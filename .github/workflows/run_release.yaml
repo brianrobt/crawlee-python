@@ -28,41 +28,41 @@ on:
 jobs:
   # This job determines if the conditions are met for a release to occur. It will proceed if triggered manually,
   # for any published release, or if the commit on push does not begin with "docs" or "chore".
-  should_release:
-    name: Check whether to release
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      (
-        github.event_name == 'push' &&
-        !startsWith(github.event.head_commit.message, 'docs') &&
-        !startsWith(github.event.head_commit.message, 'ci')
-      )
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    outputs:
-      version_number: ${{ steps.version_number.outputs.result }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Locally remove beta tags
-        run: |
-          git tag | grep 'b[0-9]' | xargs git tag --delete
-
-      - name: Install git-cliff
-        run: pip install git-cliff
-
-      - name: Determine version number
-        id: version_number
-        run: |
-          if [[ '${{ github.event_name }}' = workflow_dispatch && '${{ github.event.inputs.release_type }}' = custom ]]; then
-            echo result=$(echo ${{ github.event.inputs.custom_version }} | sed s/^v//) | tee -a $GITHUB_OUTPUT
-          else
-            echo result=$(git-cliff --bumped-version | sed s/^v//) | tee -a $GITHUB_OUTPUT
-          fi
+  # should_release:
+  #   name: Check whether to release
+  #   if: |
+  #     github.event_name == 'workflow_dispatch' ||
+  #     (
+  #       github.event_name == 'push' &&
+  #       !startsWith(github.event.head_commit.message, 'docs') &&
+  #       !startsWith(github.event.head_commit.message, 'ci')
+  #     )
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   outputs:
+  #     version_number: ${{ steps.version_number.outputs.result }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #
+  #     - name: Locally remove beta tags
+  #       run: |
+  #         git tag | grep 'b[0-9]' | xargs git tag --delete
+  #
+  #     - name: Install git-cliff
+  #       run: pip install git-cliff
+  #
+  #     - name: Determine version number
+  #       id: version_number
+  #       run: |
+  #         if [[ '${{ github.event_name }}' = workflow_dispatch && '${{ github.event.inputs.release_type }}' = custom ]]; then
+  #           echo result=$(echo ${{ github.event.inputs.custom_version }} | sed s/^v//) | tee -a $GITHUB_OUTPUT
+  #         else
+  #           echo result=$(git-cliff --bumped-version | sed s/^v//) | tee -a $GITHUB_OUTPUT
+  #         fi
 
   # update_changelog:
   #   name: Update changelog
@@ -113,7 +113,7 @@ jobs:
 
   update_changelog:
     name: Update changelog
-    needs: [should_release]
+    #    needs: [should_release]
     runs-on: ubuntu-latest
     permissions:
       contents: write
