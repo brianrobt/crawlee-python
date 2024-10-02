@@ -170,10 +170,10 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ git-cliff.outputs.version }}
-          name: ${{ git-cliff.outputs.version }}
+          tag_name: v${{ github.event.inputs.custom_version }}
+          name: ${{ github.event.inputs.custom_version }}
           target_commitish: ${{ needs.update_changelog.outputs.changelog_commitish }}
-          body_path: ${{ git-cliff.outputs.content }}
+          body_path: ${{ steps.git-cliff.outputs.content }}
 
 
       # use release body in the same job
