@@ -174,7 +174,7 @@ jobs:
       - name: Upload the binary releases
         uses: svenstaro/upload-release-action@v2
         with:
-          file: CHANGES.md
+          file: CHANGELOG.md
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
           body: ${{ needs.changelog.outputs.release_body }}
