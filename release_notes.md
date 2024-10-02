@@ -1,4 +1,4 @@
-## [0.3.8-testing](https://github.com/apify/crawlee-python/releases/tag/v0.3.8-testing) (2024-10-02)
+## [0.3.8-testing2](https://github.com/apify/crawlee-python/releases/tag/v0.3.8-testing2) (2024-10-02)
 
 ### 🚀 Features
 
