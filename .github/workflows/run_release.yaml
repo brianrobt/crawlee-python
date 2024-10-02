@@ -156,14 +156,26 @@ jobs:
           author_email: noreply@brianrobt.com
           message: "chore(release): Update changelog and package version [skip ci]"
 
-      # use release body in the same job
-      - name: Upload the binary releases
-        uses: svenstaro/upload-release-action@v2
+      - name: Generate release notes with git-cliff
+        run: git-cliff --tag "v${{ needs.should_release.outputs.version_number }}" --unreleased --strip all > release_notes.md
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
         with:
-          file: CHANGELOG.md
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
-          body: ${{ steps.git-cliff.outputs.content }}
+          tag_name: v${{ needs.should_release.outputs.version_number }}
+          name: ${{ needs.should_release.outputs.version_number }}
+          target_commitish: ${{ needs.update_changelog.outputs.changelog_commitish }}
+          body_path: CHANGES.md
+
+
+      # use release body in the same job
+      # - name: Upload the binary releases
+      #   uses: svenstaro/upload-release-action@v2
+      #   with:
+      #     file: CHANGELOG.md
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #     tag: ${{ github.ref }}
+      #     body: ${{ steps.git-cliff.outputs.content }}
 
   # use release body in another job
   # upload:
