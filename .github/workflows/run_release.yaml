@@ -136,10 +136,10 @@ jobs:
         uses: orhun/git-cliff-action@v4
         id: git-cliff
         with:
-          #          config: cliff.toml
-          args: -vv --latest --strip header
+          config: cliff.toml
+          args: --tag ${{ github.event.inputs.custom_version }} --unreleased --strip all
         env:
-          OUTPUT: CHANGES.md
+          OUTPUT: release_notes.md
           GITHUB_REPO: ${{ github.repository }}
 
       # - name: Install poetry
@@ -158,14 +158,22 @@ jobs:
 
       # - name: Generate release notes with git-cliff
       #   run: git-cliff --tag "v${{ needs.should_release.outputs.version_number }}" --unreleased --strip all > release_notes.md
+  #     - name: Create release
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         tag_name: v${{ needs.should_release.outputs.version_number }}
+  #         name: ${{ needs.should_release.outputs.version_number }}
+  #         target_commitish: ${{ needs.update_changelog.outputs.changelog_commitish }}
+  #         body_path: release_notes.md
+
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ needs.should_release.outputs.version_number }}
-          name: ${{ needs.should_release.outputs.version_number }}
+          tag_name: v${{ git-cliff.outputs.version }}
+          name: ${{ git-cliff.outputs.version }}
           target_commitish: ${{ needs.update_changelog.outputs.changelog_commitish }}
-          body_path: CHANGES.md
+          body_path: ${{ git-cliff.outputs.content }}
 
 
       # use release body in the same job
